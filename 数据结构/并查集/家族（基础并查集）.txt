@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+int N,M,Q;
+int fa[20005];
+void init() {for(int i=1;i<=N;i++) fa[i]=i;}
+
+int find(int x) {return x==fa[x]?x:fa[x]=find(fa[x]);}
+
+int main()
+{
+	int x,y;
+	int p,q;
+cin>>N>>M>>Q;
+	init();
+	for(int i=1;i<=M;i++)
+	{
+	cin>>x>>y;
+		int p=find(x),q=find(y);
+		if(p!=q) fa[q]=p;
+	}
+	for(int i=1;i<=Q;i++)
+	{
+		cin>>x>>y;
+		if(find(x)==find(y)) cout<<"Yes"<<endl;
+		else cout<<"No"<<endl;
+	}
+	return 0;
+}

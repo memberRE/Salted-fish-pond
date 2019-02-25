@@ -1,0 +1,56 @@
+#include<iostream>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int gcd(int a,int b)
+{
+	int r=a%b;
+	while(a%b!=0)
+	{
+	    r=a%b;
+		a=b;
+		b=r;
+	}
+	return b;
+}
+struct ppp{
+	int x,y,z;
+}pic[6005];
+int m,n,a[505],s,t,mx=1111111,mn=2;
+void chushi(){
+	for(int i=1;i<=n;i++) a[i]=i;
+}
+bool cam(ppp g,ppp h){//ÉýÐò
+	return g.z<h.z;
+}
+int find(int p){
+	if(a[p]==p) return p;
+	else return a[p]=find(a[p]);
+}
+int main(){
+	cin>>n>>m;//m±ß£¬nµã£» 
+	for(int i=0;i<m;i++) 	cin>>pic[i].x>>pic[i].y>>pic[i].z;
+	cin>>s>>t;
+	sort(pic,pic+m,cam);
+	for(int i=0;i<m;i++){
+		chushi();
+	/*	a[pic[i].x]=find(pic[i].y);
+		if((pic[i].x==s and pic[i].y==t) or (pic[i].x==t and pic[i].y==s)) {
+			cout<<"1"<<endl;
+			return 0;
+		}*/
+		for(int j=i;j<m;j++){
+			a[pic[j].x]=find(pic[j].y);
+			if(find(s)==find(t)) {
+				int maxx=pic[j].z/gcd(pic[j].z,pic[i].z);
+				int minn=pic[i].z/gcd(pic[j].z,pic[i].z);
+				if(maxx*mn<mx*minn) {mn=minn;mx=maxx;} break;
+			}
+		}
+	}
+	if(mx==mn or mn==1) 	cout<<mx;
+	else if(mx==1111111) cout<<"IMPOSSIBLE";
+	else cout<<mx<<"/"<<mn;
+	return 0;	
+}

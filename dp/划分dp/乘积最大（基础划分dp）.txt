@@ -1,0 +1,44 @@
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+#include<cmath>
+#include<cstdio>
+using namespace std;
+unsigned long long dp[45][45][8];
+int n,k;
+char pic[500];
+unsigned long long shu(int a,int b){//¡ã¨¹¨¤¡§ab ,begain:a,end:b
+	long long sum=0;
+	int k=b-a+1;
+	for(int i=1;i<=k;i++)
+		sum+=(pic[a+i-1]-48)*pow(10,k-i);
+	//cout<<a<<b<<" 00 "<<sum<<endl;
+	return sum;
+}
+unsigned long long mfs(int a, int b,int l){
+	unsigned long long s=0;
+	if(dp[a][b][l]!=0) return dp[a][b][l];
+	if(l==1)
+	{
+		for(int i=a;i<b;i++)
+	  	    s=max(s,shu(a,i)*shu(i+1,b));
+	  	    // cout<<a<<b<<l<<" 01 "<<s<<endl;
+	    return dp[a][b][l]=s;
+	}
+	else  {
+		for(int i=a+1;i<=b-l+1;i++){
+			  s=max(s,shu(a,i-1)*mfs(i,b,l-1));
+		}
+	        //  cout<<a<<b<<l<<" 02 "<<s<<endl;
+	    return dp[a][b][l]=s;
+	}
+	
+}
+int main(){
+	memset(dp,0,sizeof(dp));
+	cin>>n>>k;
+	scanf("\n");
+	gets(pic+1);
+	cout<<mfs(1,n,k)<<endl;
+	return 0;
+} 

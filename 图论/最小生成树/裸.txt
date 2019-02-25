@@ -1,0 +1,55 @@
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+struct ppp{
+	int x,y,k;
+}pic[10006];
+int p[10006],n;
+long long ans=0;
+bool cam(ppp a,ppp b){
+	return a.k<b.k;
+}
+int find(int x){
+	if(p[x]==x) return x;
+	else 
+	{
+		p[x]=find(p[x]);
+		return find(p[x]);
+	}
+}
+int main()
+{
+	cin>>n;
+	int op=0;
+	for(int i=1;i<=n;i++)
+	{p[i]=i;
+			for(int j=1;j<=n;j++)
+			{
+				int jkl;
+				cin>>jkl;
+				if(j!=i)
+				{
+					pic[op].x=i;
+					pic[op].y=j;
+					pic[op].k=jkl;
+					op++;
+				}
+			}
+	}
+//	for(int i=0;i<op;i++)
+//		cout<<pic[i].x<<" "<<pic[i].y<<" "<<pic[i].k<<endl;
+	sort(pic,pic+op,cam);
+	for(int i=0;i<op;i++)
+	{
+		int aa=find(pic[i].x),bb=find(pic[i].y);
+		if(aa!=bb)
+		{
+			ans+=pic[i].k;
+			p[aa]=bb;
+		}
+	}
+	cout<<ans<<endl;
+	return 0;
+}

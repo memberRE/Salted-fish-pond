@@ -1,0 +1,158 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<cmath>
+#include<algorithm>
+#include<map>
+using namespace std;
+map<int ,int> check;
+struct pppp{
+	int x,y,z;
+}edge[50002];
+struct ppp{
+	vector<int> w;
+}pic[30002];
+bool cam(pppp a,pppp b){
+	return a.z>b.z;
+}
+int p[30002],value[30002],m,n,N,dfsnum=0;
+int eu[50004],dp[50004],pos[50004],st[50004][21];
+int zhao(int x)
+{
+	int pa=0;
+	bool biao=false;
+	for(int i=0;i<pic[x].w.size();i++)
+	{
+		if(pic[x].w[i]>x)
+		{
+			biao=1;
+			pa=zhao(pic[x].w[i]);
+		}
+	}
+	if(biao) return pa;
+	else return x;
+}
+void input(int x,int y,int z)
+{
+	int X=zhao(x),Y=zhao(y);
+//	cout<<"x:"<<x<<" "<<"zhao:"<<X<<endl;
+//	cout<<"y:"<<y<<" "<<"zhao:"<<Y<<endl;
+	N++;
+	value[N]=z;
+	pic[N].w.push_back(X);
+	pic[N].w.push_back(Y);
+	pic[X].w.push_back(N);
+	pic[Y].w.push_back(N);
+}
+int find(int x)
+{
+	if(p[x]==x) return x;
+	else return p[x]=find(p[x]);
+}
+void kruskal()
+{
+	for(int i=1;i<=n;i++)
+		p[i]=i;
+	sort(edge+1,edge+1+m,cam);
+	for(int i=1;i<=m;i++)
+	{
+		int aa=find(edge[i].x),bb=find(edge[i].y);
+		if(aa!=bb)
+		{
+			p[aa]=bb;
+			input(edge[i].x,edge[i].y,edge[i].z);
+		}
+	}
+}
+//--------RMQ------
+int getmin(int x,int y)
+{
+	return dp[x]<dp[y]?x:y;
+}
+void ST(int k)
+{
+	for(int i=1;i<=k;i++)
+		st[i][0]=eu[i];
+	for(int j=1;(1<<j)<=k;j++)
+		for(int i=1;i+(1<<j)-1<=k;i++)
+				st[i][j]=getmin(st[i][j-1],st[i+(1<<j-1)][j-1]);
+}
+int rmq(int l,int r)
+{
+	int k=trunc(log2(r-l+1));
+	return getmin(st[l][k],st[r-(1<<k)+1][k]);
+}
+//--------LCA------//¡ä¨®1?a¨º? 
+void dfs(int fa,int u,int d)
+{
+	++dfsnum;
+	dp[u]=d;
+	eu[dfsnum]=u;
+	if(!pos[u]) pos[u]=dfsnum;
+	for(int i=0;i<pic[u].w.size();i++)
+	{
+		int v=pic[u].w[i];
+		if(v==fa) continue;
+		dfs(u,v,d+1);
+		++dfsnum;
+		eu[dfsnum]=u;
+	}
+}
+int lca(int u,int v)
+{
+	if(pos[u]>pos[v])	swap(u,v);
+	int idx=rmq(pos[u],pos[v]);
+	return idx;
+}
+//-----------------
+int main()
+{
+	cin>>n>>m;
+	N=n;
+	for(int i=1;i<=m;i++)
+	{
+		int x,y,z;
+		scanf("%d%d%d",&x,&y,&z);
+		edge[i].x=x;
+		edge[i].y=y;
+		edge[i].z=z;
+	}
+	kruskal();
+	for(int i=1;i<=n;i++)//----3????¡ä N+1
+	{
+		if(!check[find(i)])
+		{
+			int xx=zhao(i);
+			pic[xx].w.push_back(N+1);
+			pic[N+1].w.push_back(xx);
+			check[find(i)]=1;
+		}
+	}
+//	for(int i=1;i<=7;i++)
+//	{
+//		cout<<"   asd "<<i<<endl;
+//		for(int j=0;j<pic[i].w.size();j++)
+//			cout<<" "<<pic[i].w[j];
+//		cout<<endl; 
+//	}
+	dfs(-1,N+1,1);
+	ST(2*(N+1)-1);
+//	for(int i=1;i<=2*(N+1)-1;i++)
+//		cout<<" "<<eu[i];
+//	cout<<endl;
+	int q;
+	cin>>q;
+	for(int i=1;i<=q;i++)
+	{
+		int x,y;
+		scanf("%d%d",&x,&y);
+		if(find(x)==find(y))
+		{
+			int jkl=lca(x,y);
+			cout<<value[jkl]<<endl;
+		}
+		else cout<<"-1"<<endl;
+	}
+	return 0;
+}

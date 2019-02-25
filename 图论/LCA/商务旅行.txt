@@ -1,0 +1,68 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<algorithm>
+#include<vector>
+using namespace std;
+vector<int>pic[30002],que[30002];;
+int n,m,ans,p[30002],ll[30002];
+bool color[30002];
+int find(int x)
+{
+	if(p[x]==x)	return x;
+	return p[x]=find(p[x]);
+}
+void lca(int u,int low)
+{
+	p[find(u)]=u;
+	ll[u]=low;
+	low++;
+	for(int i=0;i<pic[u].size();i++)
+	{
+		if(ll[pic[u][i]] or pic[u][i]==1) continue;
+		lca(pic[u][i],low);
+		p[pic[u][i]]=u;
+	}
+	color[u]=1;
+	for(int i=0;i<que[u].size();i++)
+	{
+		if(color[que[u][i]])
+		{
+			int ance=p[find(que[u][i])];
+		//	cout<<u<<" "<<ll[u]<<" "<<que[u][i]<<" "<<ll[que[u][i]]<<" "<<ance<<" "<<ll[ance]<<endl;
+			ans+=ll[u]+ll[que[u][i]]-2*ll[ance];
+		}
+	}
+}
+int main()
+{
+	cin>>n;
+	for(int i=1;i<=n-1;i++)
+	{
+		int a,b;
+		scanf("%d%d",&a,&b);
+		pic[a].push_back(b);
+		pic[b].push_back(a);
+		p[i]=i;
+	}
+	p[n]=n;
+	cin>>m;
+	int asd;
+	cin>>asd;
+	for(int i=2;i<=m;i++)
+	{
+		int a;
+		scanf("%d",&a);
+		que[asd].push_back(a);
+		que[a].push_back(asd);
+		asd=a;
+	//	cout<<a<<" "<<asd<<endl;
+	}
+/*	for(int i=1;i<=n;i++)
+		for(int j=0;j<que[i].size();j++)
+			cout<<i<<" "<<j<<endl;*/
+	//-----------------------
+	lca(1,0);
+	cout<<ans<<endl;
+	return 0;
+}

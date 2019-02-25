@@ -1,0 +1,81 @@
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+struct ppp{
+    int left,right;long long sum,ad;
+}tree[800004];
+long long pic[200004];
+void build(int node,int l,int r){
+	if(l==r) {
+		tree[node].left=tree[node].right=l;
+		tree[node].sum=pic[l];
+		return; 
+	}
+	else { 
+	    tree[node].left =l;
+	    tree[node].right=r;  
+		build(node<<1,l,(r+l)>>1);   
+		build((node<<1)+1,((r+l)>>1)+1,r);
+		tree[node].sum=tree[node<<1].sum+tree[(node<<1)+1].sum;
+		return;
+	}
+}
+void pushdown(int node,int l,int r,int x){
+	tree[node].sum+=x*(r-l+1);
+	if(l==tree[node].left and r==tree[node].right) {
+		if(l!=r)
+		tree[node].ad+=x;  //biao ji,他自己更新le 
+		return;
+	}
+	if(l>=tree[(node<<1)+1].left){
+		pushdown((node<<1)+1,l,r,x);
+		return ;
+	}
+	if(r<=tree[node<<1].right){
+		pushdown(node<<1,l,r,x);
+		return ;
+	}
+	else {
+		pushdown(node<<1  ,l,tree[node<<1].right ,x);
+		pushdown((node<<1)+1,tree[(node<<1)+1].left,r,x);
+		return;
+	}
+}
+long long search(int node,int l,int r){
+    if(l==tree[node].left and r==tree[node].right) return tree[node].sum;
+	if(tree[node].ad!=0){
+		tree[node<<1].sum+=tree[node].ad*(tree[node<<1].right-tree[node<<1].left+1);
+		tree[(node<<1)+1].sum+=tree[node].ad*(tree[(node<<1)+1].right-tree[(node<<1)+1].left+1);
+		tree[node<<1].ad+=tree[node].ad;
+		tree[(node<<1)+1].ad+=tree[node].ad;
+		tree[node].ad=0;
+	}
+	
+	 
+	     if(l>=tree[(node<<1)+1].left)	return search((node<<1)+1,l,r);
+	     if(r<=tree[node<<1].right)	    return search(node<<1,l,r);
+	     else return search(node<<1,l,tree[node<<1].right)+search((node<<1)+1,tree[(node<<1)+1].left,r);
+	
+}
+int main(){
+	memset(tree,0,sizeof(tree));
+	int n,Q;
+	cin>>n;
+	for(int i=1;i<=n;i++) cin>>pic[i];
+	build(1,1,n);
+	cin>>Q;
+	for(int i=1;i<=Q;i++){
+		int k;cin>>k;
+		if(k==1){
+			int a,b,c;cin>>a>>b>>c;
+			pushdown(1,a,b,c);
+		//	for(int i=1;i<=4*n;i++) cout<<i<<" "<<tree[i].left<<" "<<tree[i].right<<" "<<tree[i].sum<<endl;
+		}
+		if(k==2){
+			int a,b;cin>>a>>b;
+			cout<<search(1,a,b)<<endl;
+		}
+	}
+	return 0;
+}
