@@ -1,0 +1,19 @@
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+int t,m,tim[999],val[999],p[105][1004];
+int main(){
+	cin>>t>>m;
+	memset(p,0,sizeof(p));
+	for(int i=1;i<=m;i++){
+		cin>>tim[i]>>val[i];
+	}
+	for(int i=1;i<=m;i++)
+	   for(int j=1;j<=t;j++){if(j>=tim[i])
+	   	p[i][j]=max(p[i-1][j],p[i-1][j-tim[i]]+val[i]);
+	   	else p[i][j]=p[i-1][j];
+	   }
+	      cout<<p[m][t];
+	      return 0;
+}

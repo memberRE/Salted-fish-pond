@@ -1,0 +1,32 @@
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+int dp[203][203],pic[203],n;
+int mfs(int a,int b)
+{
+	if(dp[a][b]!=-1) return dp[a][b];
+	if(b==a+1) return dp[a][b]=pic[a]*pic[a+1]*pic[a+2];
+	if(b==a) return dp[a][b]=0;
+	else 
+	{
+		int maxx=-1;
+		for(int i=a;i<b;i++)
+		maxx=max(maxx,mfs(a,i)+mfs(i+1,b)+pic[a]*pic[i+1]*pic[b+1]);
+		return dp[a][b]=maxx;
+	}
+}
+int main()
+{
+	cin>>n;
+	memset(dp,-1,sizeof(dp));
+	for(int i=1;i<=n;i++) {
+		cin>>pic[i];
+		pic[n+i]=pic[i];
+	}
+	int mmax=-1;
+	for(int i=1;i<=n;i++)
+	mmax=max(mmax,mfs(i,n-1+i));
+	cout<<mmax<<endl;
+	return 0;
+}

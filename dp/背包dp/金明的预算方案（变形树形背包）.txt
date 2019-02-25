@@ -1,0 +1,44 @@
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+int v[63][5],w[63][5],N,m,num[63],zhu[63],vv[63][5],ww[63][5],k=0,f[32500];
+int main(){
+	memset(v,0,sizeof(v));
+	memset(vv,0,sizeof(vv));
+	memset(num,0,sizeof(num));	
+	memset(f,0,sizeof(f));	
+	memset(w,0,sizeof(w));
+	memset(ww,0,sizeof(ww));
+	cin>>N>>m;
+	for(int i=1;i<=m;i++) {
+		cin>>v[i][0]>>w[i][0]>>num[i];
+		for(int j=1;;j++){
+		    if(num[i]==0) {	vv[i][0]=v[i][0];ww[i][0]=w[i][0]*v[i][0];break;}
+			if(vv[num[i]][j]==0){
+				vv[num[i]][j]=v[i][0];
+				ww[num[i]][j]=v[i][0]*w[i][0];
+				break;
+			}
+		}
+    }
+    for(int i=1;i<=m;i++){
+    if(vv[i][0]!=0){
+    	k++;
+    	v[k][1]=vv[i][0];
+    	w[k][1]=ww[i][0];
+    	v[k][2]=vv[i][0]+vv[i][1];
+    	w[k][2]=ww[i][0]+ww[i][1];
+    	v[k][3]=vv[i][0]+vv[i][2];
+    	w[k][3]=ww[i][0]+ww[i][2];
+    	v[k][4]=vv[i][0]+vv[i][1]+vv[i][2];
+    	w[k][4]=ww[i][0]+ww[i][1]+ww[i][2];
+       }
+    }
+    for(int i=1;i<=k;i++)
+       for(int j=N;j>=0;j--)
+          for(int l=1;l<=4;l++)
+             if(j-v[i][l]>=0)f[j]=max(f[j],f[j-v[i][l]]+w[i][l]);
+    cout<<f[N]<<endl;
+    return 0;
+}

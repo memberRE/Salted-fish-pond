@@ -1,0 +1,19 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+int dp[5000004],a[55],k,n,ans=0;
+int main(){
+	cin>>k>>n;
+	for(int i=1;i<=n;i++)
+	cin>>a[i];
+	dp[0]=0;
+	int mmin=2000000;
+    for(int i=1;;i++){
+    	 for(int j=1;j<=n;j++)
+         	if(i-a[j]>=0 and mmin>dp[i-a[j]]+1) mmin=dp[i-a[j]]+1;
+         if(mmin>k)  break;
+          ans++;dp[i]=mmin;mmin=2000000;
+    }
+        cout<<ans;
+        return 0;
+}

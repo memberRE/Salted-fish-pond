@@ -1,0 +1,98 @@
+#include<iostream>
+#include<cstring>
+#include<map>
+#include<algorithm>
+using namespace std;
+//map<int ,int>pic;
+int L,S,T,M,sto[104]={0},ans=0,biao=0;
+short dp[10000005],pic[10000005];
+int main(){
+	cin>>L>>S>>T>>M;
+	memset(dp,0x3f3f,sizeof(dp));
+	for(int i=1;i<=M;i++) {
+		cin>>sto[i];
+		if(S==T and sto[i]%S==0) ans++; 
+	} 
+	sort(sto+1,sto+M+1);
+	if(S==T) {
+		cout<<ans<<endl;return 0;
+	}	
+	for(int i=1;i<=M;i++){
+		int lin=sto[i]-sto[i-1];
+		   if(lin>25) {  if(i==M and L-M<T) biao=L-M;
+		   	for(int j=i;j<=M;j++) sto[j]-=(lin-100);
+		   }
+	}
+	for(int i=1;i<=M;i++) pic[sto[i]]=1;
+	if(biao==0)
+    L=sto[M]+T;
+    else L=sto[M]+biao;
+    dp[0]=0;//dp[S]=pic[S];dp[T]=pic[T];
+    for(int i=S;i<=L+T;i++){
+    	for(int j=S;j<=T;j++){
+    		if(i-j>=0 and i-j<L) dp[i]=min(dp[i],dp[i-j]);
+    	}
+    	  
+    	dp[i]+=pic[i];
+    }
+    //cout<<dp[L]<<endl;
+    short h=9999;
+    for(int i=L;i<L+T;i++) h=min(h,dp[i]);
+    cout<<h<<endl;
+    return 0;}
+
+
+
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+int road[101],m,s,t,l,x,k,Min,ans;
+short d[10000000],p[10000000];
+int main()
+{
+	cin>>l>>s>>t>>m;
+	memset(p,0,sizeof(p));
+	memset(d,0,sizeof(d));
+	for(int i=1;i<=m;i++) cin>>road[i];
+	if(s==t)
+	{
+		for(int i=1;i<=m;i++) if(road[i]%s==0) ans++;
+		cout<<ans;
+		return 0;
+	}
+	sort(road+1,road+1+m);
+	road[0]=0;
+	for(int i=1;i<=m;i++)
+	{
+		if(road[i]-road[i-1]>25)
+		{
+			x=road[i]-road[i-1]-25;
+			l-=x;
+			for(int j=i;j<=m;j++) road[j]-=x;
+		} 
+	}
+	if(l-road[m]>25)
+	l=road[m]+25;
+	for(int i=1;i<=m;i++) p[road[i]]=1;
+	for(int i=1;i<=l;i++) 
+	{
+		Min=101;
+		k=0;
+		for(int j=s;j<=t;j++)
+		{
+			if(i-j<0)continue;
+			if(d[i-j]==-1) continue;
+			k=1;
+			if(Min>d[i-j])Min=d[i-j];
+		}
+		if(k==0)
+		{
+			d[i]=-1;
+			continue;
+		}
+		d[i]=Min+p[i];
+    }
+    cout<<d[l];
+    return 0;
+}
